@@ -7,5 +7,5 @@ public interface OrderService {
 
     Long placeOrder(OrderRequest orderRequest);
 
-    OrderResponse getOrderDetails(Long orderId);
+    OrderResponse getOrderDetails(Long orderId, String bearerToken);
 }

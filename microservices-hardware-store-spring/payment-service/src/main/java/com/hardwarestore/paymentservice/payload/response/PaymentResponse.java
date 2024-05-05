@@ -1,10 +1,8 @@
 package com.hardwarestore.paymentservice.payload.response;
 
 import com.hardwarestore.paymentservice.utils.PaymentMode;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 

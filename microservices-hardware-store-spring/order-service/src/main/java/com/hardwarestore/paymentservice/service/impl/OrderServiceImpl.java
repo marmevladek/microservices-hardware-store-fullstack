@@ -14,6 +14,7 @@ import com.hardwarestore.paymentservice.repository.OrderRepository;
 import com.hardwarestore.paymentservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -81,7 +82,13 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public OrderResponse getOrderDetails(Long orderId) {
+    public OrderResponse getOrderDetails(Long orderId, String bearerToken) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", bearerToken);
+
+        HttpEntity<String> request = new HttpEntity<String>(headers);
 
         log.info("OrderServiceImpl | getOrderDetails | Get order details for Order Id : {}", orderId);
 
@@ -92,17 +99,22 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("OrderServiceImpl | getOrderDetails | Invoking Product service to fetch the product for id: {}", order.getProductId());
 
-        ProductResponse productResponse = restTemplate.getForObject(
-                "http://PRODUCT-SERVICE/product/" + order.getProductId(), ProductResponse.class
+        ResponseEntity<ProductResponse> productResponseEntity = restTemplate.exchange(
+                "http://PRODUCT-SERVICE/product/" + order.getProductId(), HttpMethod.GET, request, ProductResponse.class
         );
+        ProductResponse productResponse = productResponseEntity.getBody();
 
         log.info("OrderServiceImpl | getOrderDetails | Getting payment information form the payment Service");
 
-        PaymentResponse paymentResponse
-                = restTemplate.getForObject(
+        ResponseEntity<PaymentResponse> paymentResponseEntity
+                = restTemplate.exchange(
                 "http://PAYMENT-SERVICE/payment/order/" + order.getId(),
+                HttpMethod.GET,
+                request,
                 PaymentResponse.class
         );
+
+        PaymentResponse paymentResponse = paymentResponseEntity.getBody();
 
         OrderResponse.ProductDetails productDetails = OrderResponse.ProductDetails.builder()
                 .productName(productResponse.getProductName())

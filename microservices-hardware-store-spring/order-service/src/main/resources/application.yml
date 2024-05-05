@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: ORDER-SERVICE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hardwarestore-order-db
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      external:
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+
+app:
+  jwtSecret: dGhpcyBpcyBhIGtleSBmb3IgdGhhdCB3aWxsIGJlIHVzZWQgd2hlbiBkZWZpbml0ZWx5IGluIGJ1ZmZlciBpbiB0aGVpciBwcmVmZXJzZWQgSE1BQy1TSEEyNTYgaW1hZ2VzLi4u
