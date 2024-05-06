@@ -14,7 +14,7 @@
     <groupId>com.hardwarestore</groupId>
     <artifactId>payment-service</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>payment-service</name>
+    <name>Payment Service</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

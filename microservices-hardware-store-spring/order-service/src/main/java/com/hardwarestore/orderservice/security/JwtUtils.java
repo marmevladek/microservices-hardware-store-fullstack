@@ -1,4 +1,4 @@
-package com.hardwarestore.productservice.security;
+package com.hardwarestore.orderservice.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +23,7 @@ public class JwtUtils extends SecurityProperties.Filter {
     private String jwtSecret;
 
     public String getUserNameFromJwtToken(String token) {
-        if (token.startsWith("Bearer")) {
+        if(token.startsWith("Bearer")){
             token = token.substring(7);
         }
 
@@ -33,9 +33,8 @@ public class JwtUtils extends SecurityProperties.Filter {
                 .getBody()
                 .getSubject();
     }
-
     public String[] getRoleNamesFromJwtToken(String token) {
-        if (token.startsWith("Bearer")) {
+        if(token.startsWith("Bearer")){
             token = token.substring(7);
         }
 
@@ -45,14 +44,14 @@ public class JwtUtils extends SecurityProperties.Filter {
                 .parseClaimsJws(token)
                 .getBody()
                 .getIssuer();
-        return username.split(" ");
+        return  username.split(" ");
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts
                     .parserBuilder()
-                    .setSigningKey(key()).build().parseClaimsJws(authToken);
+                            .setSigningKey(key()).build().parse(authToken);
 
             return true;
         } catch (MalformedJwtException e) {
@@ -70,6 +69,5 @@ public class JwtUtils extends SecurityProperties.Filter {
 
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 8084
 
 spring:
   application:
@@ -23,5 +23,5 @@ eureka:
 
 app:
   jwtSecret: dGhpcyBpcyBhIGtleSBmb3IgdGhhdCB3aWxsIGJlIHVzZWQgd2hlbiBkZWZpbml0ZWx5IGluIGJ1ZmZlciBpbiB0aGVpciBwcmVmZXJzZWQgSE1BQy1TSEEyNTYgaW1hZ2VzLi4u
-  jwtExpireMs: 120000
+  jwtExpireMs: 1200000
   jwtRefreshExpireMs: 120000

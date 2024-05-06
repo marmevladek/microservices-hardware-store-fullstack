@@ -12,7 +12,7 @@
 
     <groupId>com.hardwarestore</groupId>
     <artifactId>order-service</artifactId>
-    <name>orderService</name>
+    <name>Order Service</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

@@ -1,13 +1,13 @@
-package com.hardwarestore.productservice.config;
+package com.hardwarestore.orderservice.config;
 
-import com.hardwarestore.productservice.security.AuthTokenFilter;
-import com.hardwarestore.productservice.security.JwtAccessDeniedHandler;
-import com.hardwarestore.productservice.security.JwtAuthEntryPoint;
+import com.hardwarestore.orderservice.security.AuthTokenFilter;
+import com.hardwarestore.orderservice.security.JwtAccessDeniedHandler;
+import com.hardwarestore.orderservice.security.JwtAuthEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity(debug = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -26,15 +26,13 @@ public class SecurityConfig {
     private final AuthTokenFilter authTokenFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/product/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/order/**").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "/order/**").hasRole("USER")
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -42,8 +40,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exc ->
                         exc
-                                .accessDeniedHandler(jwtAccessDeniedHandler)
                                 .authenticationEntryPoint(jwtAuthEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

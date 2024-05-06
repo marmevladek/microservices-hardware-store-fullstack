@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProductById(Long productId) {
         log.info("Product id: {}", productId);
 
-        if (productRepository.existsById(productId)) {
+        if (!productRepository.existsById(productId)) {
             log.info("Im in this loop {}", !productRepository.existsById(productId));
             throw new ProductServiceCustomException("Product with give Id: " + productId + " not found", "PRODUCT_NOT_FOUND");
         }

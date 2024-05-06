@@ -1,4 +1,4 @@
-package com.hardwarestore.productservice.security;
+package com.hardwarestore.orderservice.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
