@@ -21,10 +21,13 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "PRICE")
+    @Column(name = "price")
     private long price;
 
-    @Column(name = "QUANTITY")
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "quantity")
     private long quantity;
 
 }
