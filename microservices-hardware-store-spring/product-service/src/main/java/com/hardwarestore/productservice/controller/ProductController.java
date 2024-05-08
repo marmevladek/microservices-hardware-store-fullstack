@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -19,18 +23,28 @@ public class ProductController {
     private final ProductService productService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping
-    public ResponseEntity<Long> addProduct(@RequestBody ProductRequest productRequest) {
+    @PostMapping("/add")
+    public ResponseEntity<Long> addProduct(@RequestParam("name") String name,
+                                           @RequestParam("price") long price,
+                                           @RequestParam("description") String description,
+                                           @RequestParam("quantity") long quantity,
+                                           @RequestParam("file") MultipartFile file) {
 
         log.info("ProductController | addProduct is called");
+        ProductRequest productRequest = new ProductRequest(
+                name,
+                price,
+                description,
+                quantity
+        );
+
 
         log.info("ProductController | addProduct | productRequest: {}", productRequest.toString());
 
-        long productId = productService.addProduct(productRequest);
-        return new ResponseEntity<>(productId, HttpStatus.CREATED);
+        long productId = productService.addProduct(productRequest, file);
+        return new ResponseEntity<>(productId, HttpStatus.CREATED); //productid
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") long productId) {
 
@@ -41,6 +55,13 @@ public class ProductController {
         ProductResponse productResponse = productService.getProductById(productId);
 
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> productResponses = productService.getAllProducts();
+        System.out.println(productResponses.toString());
+        return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
@@ -57,5 +78,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable("id") long productId) {
         productService.deleteProductById(productId);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/uploadImage")
+    public void uploadImage(@RequestParam("file") MultipartFile file) {
+        System.out.println(file.getOriginalFilename());
     }
 }

@@ -7,10 +7,12 @@ public class ProductMapper {
 
     public static ProductResponse mapToProductResponse(Product product) {
         return new ProductResponse(
-                product.getProductName(),
                 product.getId(),
+                product.getProductName(),
                 product.getPrice(),
-                product.getQuantity()
+                product.getDescription(),
+                product.getQuantity(),
+                product.getImages()
         );
     }
 }

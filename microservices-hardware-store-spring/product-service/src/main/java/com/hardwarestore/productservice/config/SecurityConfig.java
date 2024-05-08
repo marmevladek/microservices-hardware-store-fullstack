@@ -31,9 +31,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/product/add/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/product/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/product/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
@@ -54,7 +53,7 @@ public class SecurityConfig {
         return (web ->
                 web
                         .ignoring()
-                        .requestMatchers("/authenticate/signup", "authenticate/login", "/authenticate/refreshtoken")
+                        .requestMatchers("/authenticate/signup", "authenticate/login", "/authenticate/refreshtoken", "/product/all", "/product/{id}")
         );
     }
 }
