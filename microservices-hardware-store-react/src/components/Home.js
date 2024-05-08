@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-import UserService from "../services/user.service";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 
-// import Login from "../components/Login";
-// import Register from "../components/Register";
-// import Profile from "./components/Profile";
-// import BoardUser from "./components/BoardUser";
-// import BoardModerator from "./components/BoardModerator";
-// import BoardAdmin from "./components/BoardAdmin";
+import productService from "../services/product.service";
 
-import { logout } from "../actions/auth";
-import { clearMessage } from "../actions/message";
-
-// import AuthVerify from "./common/AuthVerify";
-import EventBus from "../common/EventBus";
 
 const Home = () => {
-  
+  const [products, setProducts] = useState()
+
+  useEffect(() => {
+    productService.getAllProducts()
+      .then(response => {
+        setProducts(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching products:", error);
+      });
+  }, []);
+
+
   return (    
     <div>
       <div className="container mt-5">
@@ -49,68 +50,52 @@ const Home = () => {
                         </div>
                     </li>
                 </ul>
-                <form className="form-inline my-2 my-lg-0">
-                    <input className="form-control mr-sm-2" type="search" placeholder="Поиск товаров" aria-label="Search"/>
-                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit"><img src="https://image.flaticon.com/icons/png/512/25/25694.png" alt="Поиск" style={{width: "20px"}}/></button>
+                <form class="header__search-form" action="#">
+                  <div class="header__search-input">
+                    <input type="search" placeholder="Поиск" />
+                    <button class="btn btn--submit btn-dark btn--uppercase btn--weight " type="submit">Найти</button>
+                  </div>
                 </form>
+                
             </div>
 
         </nav>
         
         <br/>
-        <div className="row mb-5">
-
-              <div className="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div className="block-4 text-center border">
-                  <figure className="block-4-image">
-                    <a href="shop-single.html"><img src="https://via.placeholder.com/300" className="card-img-top" alt="Товар"/></a>
-                  </figure>
-                  <div className="block-4-text p-4">
-                    <h3><a href="shop-single.html">Tank Top</a></h3>
-                    <p className="mb-0">Finding perfect t-shirt</p>
-                    <p className="text-primary font-weight-bold">$50</p>
-                  </div>
+        <div class="product-counter-slider-1grid overflow-hidden m-t-50">
+    <div class="swiper-wrapper d-flex flex-row justify-content-between">
+        {products && products.map(product =>
+            <div class="product__box product__box--default product__box--border-hover swiper-slide text-center swiper-slide-active" key={product.productId}>
+                <div class="product__img-box">
+                    <li className="product__img--link">
+                      <Link to={`/product/${product.productId}`}>
+                      <img class="product__img" src={product.images[0].url + "/" + product.images[0].name} alt={product.images[0].name} height="250px" width="250px"/>
+                      </Link>
+                        
+                    </li>
+                    <a href="#modalAddCart" data-toggle="modal" class="btn btn--box btn--small btn--gray btn--uppercase btn--weight btn--hover-zoom product__upper-btn">В корзину</a>
+                    <a href="wishlist.html" class="product__wishlist-icon"><i class="icon-heart"></i></a>
                 </div>
-              </div>
-              <div className="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div className="block-4 text-center border">
-                  <figure className="block-4-image">
-                    <a href="shop-single.html"><img src="https://via.placeholder.com/300" className="card-img-top" alt="Товар"/></a>
-                  </figure>
-                  <div className="block-4-text p-4">
-                    <h3><a href="shop-single.html">Corater</a></h3>
-                    <p className="mb-0">Finding perfect products</p>
-                    <p className="text-primary font-weight-bold">$50</p>
-                  </div>
+                <div class="product__price m-t-10">
+                    <span class="product__price-reg">{product.price} ₽</span>
                 </div>
-              </div>
-              <div className="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div className="block-4 text-center border">
-                  <figure className="block-4-image">
-                    <a href="shop-single.html"><img src="https://via.placeholder.com/300" className="card-img-top" alt="Товар"/></a>
-                  </figure>
-                  <div className="block-4-text p-4">
-                    <h3><a href="shop-single.html">Polo Shirt</a></h3>
-                    <p className="mb-0">Finding perfect products</p>
-                    <p className="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                <div className="block-4 text-center border">
-                  <figure className="block-4-image">
-                    <a href="shop-single.html"><img src="https://via.placeholder.com/300" className="card-img-top" alt="Товар"/></a>
-                  </figure>
-                  <div className="block-4-text p-4">
-                    <h3><a href="shop-single.html">T-Shirt Mockup</a></h3>
-                    <p className="mb-0">Finding perfect products</p>
-                    <p className="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
+                <a href="single-1.html" class="product__link product__link--weight-regular m-t-15">
+                    {product.productName}
+                </a>
             </div>
-      </div>
+        )}
+    </div>
+    <div class="swiper-buttons">
+        <div class="swiper-button-next default__nav default__nav--next"><i class="fal fa-chevron-right"></i></div>
+        <div class="swiper-button-prev default__nav default__nav--prev"><i class="fal fa-chevron-left"></i></div>
+    </div>
+</div>
+
+
+
+            </div>
+            
+
       
 
     </div>

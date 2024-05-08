@@ -7,6 +7,9 @@ import Register from "./components/Register";
 import About from "./components/About"
 import Contacts from "./components/Contacts"
 
+import ImageTest from "./components/ImageTest";
+import Product from "./components/Product";
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -23,7 +26,9 @@ const AppRoutes = () => {
 
             <Route path="/contacts" element={<Contacts />} />
 
+            <Route path="/product/add" element={<ImageTest />} />
 
+            <Route path="/product/:id" element={<Product />} />
         </Routes>
     )
 }
